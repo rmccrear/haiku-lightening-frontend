@@ -58,7 +58,7 @@ function App() {
         </div>
       </div>
       <div className="game-joined-container">
-        {hasJoinedGame  ? "Game Joined!" : ''}
+        {hasJoinedGame  ? `Game ${gameId} Joined!` : ''}
       </div>
       <div className="game-container">
         { isGameStarted ? <HaikuGame {...{...gameData.haiku, submitNextWord, wordNotAccepted}} /> 

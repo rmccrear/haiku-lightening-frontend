@@ -10,7 +10,7 @@ function HaikuLine({line, idx}) {
     console.log(line)
     return (
         <p>
-            {idx+1}. {line.join(" ")}
+            <span className='text-muted'>[line {idx+1} ({haikuLineForm[idx]}) syllables]</span> {line.join(" ")}
         </p>
     );
 }
