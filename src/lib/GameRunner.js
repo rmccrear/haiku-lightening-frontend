@@ -34,6 +34,13 @@ class GameRunner{
         }
     }
 
+    onConnect(fn){
+        this.player.io.on("connect", fn);
+    }
+    onDisconnect(fn){
+        this.player.io.on("disconnect", fn);
+    }
+
     onJoinFailed(fn) {
         this.player.onJoinFailed(fn)
     }

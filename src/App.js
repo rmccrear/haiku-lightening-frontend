@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Alert from 'react-bootstrap/Alert';
 import JoinGame from "./components/JoinGame"
 import HaikuGame from './components/HaikuGame';
 
 import gameRunner from './lib/GameRunner';
-
+const SERVER = process.env.REACT_APP_WS_URL;
 
 function App() {
   const [username, setUsername] = useState('')
@@ -14,6 +15,13 @@ function App() {
   const [gameData, setGameData] = useState({})
   const [joinFailed, setJoinFailed] = useState(false)
   const [wordNotAccepted, setWordNotAccepted] = useState(false)
+  const [isConnected, setIsConnected] = useState(false)
+  gameRunner.onConnect(()=>{
+    setIsConnected(true)
+  })
+  gameRunner.onDisconnect(()=>{
+    setIsConnected(false)
+  })
   gameRunner.onJoinGame(()=>{
     console.log("onJoinGame")
     setHasJoinedGame(true)
@@ -50,6 +58,10 @@ function App() {
 
   return (
     <div className="App">
+      {
+      !isConnected ? <Alert variant="danger">Not connected to server {SERVER} </Alert>
+      :              <Alert variant="success">Connected to server {SERVER} </Alert>
+      }
       <div>
         <h1> Haiku Lightening </h1>
         <h2> Hello {username} </h2>
