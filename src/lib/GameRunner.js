@@ -49,6 +49,10 @@ class GameRunner{
         this.player.onJoinGame(fn)
     }
 
+    onPartnerJoin(fn) {
+        this.player.io.on("player-join", fn)
+    }
+
     onGameStart(fn) {
         this.player.onGameStart(fn)
     }

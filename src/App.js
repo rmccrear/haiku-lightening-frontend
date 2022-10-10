@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Alert from 'react-bootstrap/Alert';
 import JoinGame from "./components/JoinGame"
@@ -11,39 +11,49 @@ function App() {
   const [username, setUsername] = useState('')
   const [gameId, setGameId] = useState('')
   const [hasJoinedGame, setHasJoinedGame] = useState(false)
+  const [playerList, setPlayerList] = useState([])
+  const [maxPlayers, setMaxPlayers] = useState(3);
   const [isGameStarted, setIsGameStarted] = useState(false)
   const [gameData, setGameData] = useState({})
   const [joinFailed, setJoinFailed] = useState(false)
   const [wordNotAccepted, setWordNotAccepted] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
-  gameRunner.onConnect(()=>{
-    setIsConnected(true)
-  })
-  gameRunner.onDisconnect(()=>{
-    setIsConnected(false)
-  })
-  gameRunner.onJoinGame(()=>{
-    console.log("onJoinGame")
-    setHasJoinedGame(true)
-  })
-  gameRunner.onJoinFailed((payload)=>{
-    console.log("onJoinFailed")
-    setJoinFailed(payload);
-  })
-  gameRunner.onGameStart((payload)=>{
-    console.log("onGameStart", payload)
-    setIsGameStarted(true)
-    setGameData(payload)
-  })
-  gameRunner.onNextTurn((payload)=>{
-    console.log("onNextTurn")
-    setWordNotAccepted('')
-    setGameData(payload)
-  })
-  gameRunner.onWordNotAccepted((payload)=>{
-    console.log("onWordNotAccepted")
-    setWordNotAccepted(payload.word)
-  })
+  useEffect(()=>{
+    gameRunner.onConnect(()=>{
+      setIsConnected(true)
+    })
+    gameRunner.onDisconnect(()=>{
+      setIsConnected(false)
+    })
+    gameRunner.onJoinGame((payload)=>{
+      console.log("onJoinGame")
+      setHasJoinedGame(true)
+      setPlayerList(payload.friends)
+      setMaxPlayers(payload.maxPlayers);
+    })
+    gameRunner.onJoinFailed((payload)=>{
+      console.log("onJoinFailed")
+      setJoinFailed(payload);
+    })
+    gameRunner.onPartnerJoin((payload)=>{
+      console.log("onPartnerJoin")
+      setPlayerList(payload.friends)
+    })
+    gameRunner.onGameStart((payload)=>{
+      console.log("onGameStart", payload)
+      setIsGameStarted(true)
+      setGameData(payload)
+    })
+    gameRunner.onNextTurn((payload)=>{
+      console.log("onNextTurn")
+      setWordNotAccepted('')
+      setGameData(payload)
+    })
+    gameRunner.onWordNotAccepted((payload)=>{
+      console.log("onWordNotAccepted")
+      setWordNotAccepted(payload.word)
+    })
+  }, []);
   const startGame = ({username, gameId}) => {
     setUsername(username)
     setGameId(gameId)
@@ -70,7 +80,7 @@ function App() {
         </div>
       </div>
       <div className="game-joined-container">
-        {hasJoinedGame  ? `Game ${gameId} Joined!` : ''}
+        {hasJoinedGame  ? `Game ${gameId} Joined with ${playerList.join(", and  ")}! ${ playerList.length<maxPlayers ? "Waiting for more players to join." : ''}` : ''}
       </div>
       <div className="game-container">
         { isGameStarted ? <HaikuGame {...{...gameData.haiku, submitNextWord, wordNotAccepted}} /> 

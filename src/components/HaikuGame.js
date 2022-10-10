@@ -6,11 +6,20 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const haikuLineForm = [5,7,5]
 
-function HaikuLine({line, idx}) {
+function HaikuLine({line, idx, linePosition, finished}) {
     console.log(line)
+    let isCurrentLine = false
+    let css = {
+        color: "gray"
+    }
+    if(idx===linePosition) { 
+        isCurrentLine = true;
+        css = {color: "green"}
+    }
     return (
         <p>
-            <span className='text-muted'>[line {idx+1} ({haikuLineForm[idx]}) syllables]</span> {line.join(" ")}
+            <span style={css}>[line {idx+1} ({haikuLineForm[idx]}) syllables]</span> {line.join(" ")}
+            {isCurrentLine && !finished ? " ^______^" : ""} 
         </p>
     );
 }
@@ -19,7 +28,7 @@ function HaikuLine({line, idx}) {
 function HaikuGame(props) {
     const [newNextWord, setNewNextWord] = useState('')
     console.log(props)
-    const {lines, submitNextWord, finished, wordNotAccepted} = props;
+    const {lines, linePosition, submitNextWord, finished, wordNotAccepted} = props;
     const onNextWordChange = (event) => {
         setNewNextWord(event.target.value)
     }
@@ -36,7 +45,7 @@ function HaikuGame(props) {
         <div>
             <div>
                 {
-                  lines.map((line, i) => <HaikuLine  key={i} line={line} idx={i}/> )
+                  lines.map((line, i) => <HaikuLine  key={i} line={line} idx={i} linePosition={linePosition} finished={finished}/> )
                 }
             </div>
                 {
