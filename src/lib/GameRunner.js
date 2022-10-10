@@ -1,6 +1,6 @@
 import io from 'socket.io-client'
 import Player from './Player';
-const { v4: uuid } = require("uuid");
+// const { v4: uuid } = require("uuid");
 const SERVER = process.env.REACT_APP_WS_URL
 
 class GameRunner{
@@ -26,7 +26,7 @@ class GameRunner{
     }
 
     joinGame(gameName){
-        this.gameId = gameName || uuid();
+        this.gameId = gameName;
         if(this.username) {
             this.player.setUsernameAndJoin(this.gameId, this.username);
         } else {

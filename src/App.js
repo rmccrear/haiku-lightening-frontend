@@ -3,9 +3,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Alert from 'react-bootstrap/Alert';
 import JoinGame from "./components/JoinGame"
 import HaikuGame from './components/HaikuGame';
-
 import gameRunner from './lib/GameRunner';
+import randomGameId from './lib/random-slug';
 const SERVER = process.env.REACT_APP_WS_URL;
+
+function whoseTurn(turn, players){
+  const currentTurnIdx = turn%players.length;
+  const currentPlayer = players[currentTurnIdx]
+  console.log(`turn: ${turn}; ${currentPlayer}`)
+  return currentPlayer
+}
 
 function App() {
   const [username, setUsername] = useState('')
@@ -55,6 +62,7 @@ function App() {
     })
   }, []);
   const startGame = ({username, gameId}) => {
+    gameId = gameId || randomGameId();
     setUsername(username)
     setGameId(gameId)
     gameRunner.setGameId(gameId)
@@ -83,7 +91,7 @@ function App() {
         {hasJoinedGame  ? `Game ${gameId} Joined with ${playerList.join(", and  ")}! ${ playerList.length<maxPlayers ? "Waiting for more players to join." : ''}` : ''}
       </div>
       <div className="game-container">
-        { isGameStarted ? <HaikuGame {...{...gameData.haiku, submitNextWord, wordNotAccepted}} /> 
+        { isGameStarted ? <HaikuGame {...{...gameData.haiku, submitNextWord, wordNotAccepted, username, currentPlayer, players: gameData.friends}} /> 
         : hasJoinedGame ? 'Waiting on other players.' : '' }
       </div>
     </div>
