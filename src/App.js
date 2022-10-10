@@ -3,9 +3,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Alert from 'react-bootstrap/Alert';
 import JoinGame from "./components/JoinGame"
 import HaikuGame from './components/HaikuGame';
-
 import gameRunner from './lib/GameRunner';
+import randomGameId from './lib/random-slug';
 const SERVER = process.env.REACT_APP_WS_URL;
+
+function whoseTurn(turn, players){
+  const currentTurnIdx = turn%players.length;
+  const currentPlayer = players[currentTurnIdx]
+  console.log(`turn: ${turn}; ${currentPlayer}`)
+  return currentPlayer
+}
 
 function App() {
   const [username, setUsername] = useState('')
@@ -16,6 +23,7 @@ function App() {
   const [joinFailed, setJoinFailed] = useState(false)
   const [wordNotAccepted, setWordNotAccepted] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
+  const [currentPlayer, setCurrentPlayer] = useState();
   gameRunner.onConnect(()=>{
     setIsConnected(true)
   })
@@ -34,17 +42,22 @@ function App() {
     console.log("onGameStart", payload)
     setIsGameStarted(true)
     setGameData(payload)
+    const currentPlayer = whoseTurn(payload.turn, payload.friends)
+    setCurrentPlayer(currentPlayer)
   })
   gameRunner.onNextTurn((payload)=>{
     console.log("onNextTurn")
     setWordNotAccepted('')
     setGameData(payload)
+    const currentPlayer = whoseTurn(payload.turn, payload.friends)
+    setCurrentPlayer(currentPlayer)
   })
   gameRunner.onWordNotAccepted((payload)=>{
     console.log("onWordNotAccepted")
     setWordNotAccepted(payload.word)
   })
   const startGame = ({username, gameId}) => {
+    gameId = gameId || randomGameId();
     setUsername(username)
     setGameId(gameId)
     gameRunner.setGameId(gameId)
@@ -70,10 +83,10 @@ function App() {
         </div>
       </div>
       <div className="game-joined-container">
-        {hasJoinedGame  ? `Game ${gameId} Joined!` : ''}
+        {hasJoinedGame  ? <span>Game <strong>{gameId}</strong> Joined!</span> : ''}
       </div>
       <div className="game-container">
-        { isGameStarted ? <HaikuGame {...{...gameData.haiku, submitNextWord, wordNotAccepted}} /> 
+        { isGameStarted ? <HaikuGame {...{...gameData.haiku, submitNextWord, wordNotAccepted, username, currentPlayer, players: gameData.friends}} /> 
         : hasJoinedGame ? 'Waiting on other players.' : '' }
       </div>
     </div>

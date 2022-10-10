@@ -19,7 +19,7 @@ function HaikuLine({line, idx}) {
 function HaikuGame(props) {
     const [newNextWord, setNewNextWord] = useState('')
     console.log(props)
-    const {lines, submitNextWord, finished, wordNotAccepted} = props;
+    const {lines, submitNextWord, finished, wordNotAccepted, username, currentPlayer} = props;
     const onNextWordChange = (event) => {
         setNewNextWord(event.target.value)
     }
@@ -40,7 +40,7 @@ function HaikuGame(props) {
                 }
             </div>
                 {
-                    !finished ? 
+                    !finished && (username === currentPlayer) ? 
                         <>
                             <Form.Label> Add next word:</Form.Label>
                             <Form.Control onKeyDown={handleKeyDown} value={newNextWord} onChange={onNextWordChange} type="text" />
@@ -51,9 +51,10 @@ function HaikuGame(props) {
                             }
                             <Button variant='primary' onClick={submit}>Submit</Button>
                         </>
-                    :
-                        <div>
-                            "The Haiku is finished!" 
+                    : !finished ? 
+                        <div> It's {currentPlayer} 's turn. </div>
+                    :   <div>
+                            The Haiku is finished!
                         </div>
                 }
         </div>
