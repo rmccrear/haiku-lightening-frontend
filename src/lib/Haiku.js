@@ -7,8 +7,8 @@ class Haiku {
     const { lines, linePosition, nextWord, finished } = haiku;
     this.lines = lines || [[], [], []];
     this.linePosition = linePosition || 0; // which line are we currently working on?
-    this.nextWord = "" || nextWord; // to send to server
-    this.finished = false || finished;
+    this.nextWord = nextWord || ""; // to send to server
+    this.finished = finished || false;
   }
   tryWord(word) {
     // hold off on adding word to the haiku until it is checked.

@@ -55,7 +55,7 @@ function HaikuGame(props) {
                             <Form.Control onKeyDown={handleKeyDown} value={newNextWord} onChange={onNextWordChange} type="text" />
                             {
                                 wordNotAccepted ? 
-                                  <div style={{color: "red"}}>Word not accepted "{wordNotAccepted}"</div>
+                                <div style={{ color: "red" }}>Word "{ wordNotAccepted.word }" not accepted: "{wordNotAccepted.message}"</div>
                                 : ''
                             }
                             <Button variant='primary' onClick={submit}>Submit</Button>

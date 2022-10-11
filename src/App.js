@@ -22,6 +22,7 @@ function App() {
   const [maxPlayers, setMaxPlayers] = useState(3);
   const [isGameStarted, setIsGameStarted] = useState(false)
   const [gameData, setGameData] = useState({})
+  const [currentPlayer, setCurrentPlayer] = useState();
   const [joinFailed, setJoinFailed] = useState(false)
   const [wordNotAccepted, setWordNotAccepted] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
@@ -63,7 +64,7 @@ function App() {
     })
     gameRunner.onWordNotAccepted((payload)=>{
       console.log("onWordNotAccepted")
-      setWordNotAccepted(payload.word)
+      setWordNotAccepted(payload) // {word: __, message: __}
     })
   }, []);
   const startGame = ({username, gameId}) => {
