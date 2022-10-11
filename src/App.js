@@ -50,11 +50,16 @@ function App() {
       console.log("onGameStart", payload)
       setIsGameStarted(true)
       setGameData(payload)
+      const currentPlayer = whoseTurn(payload.turn, payload.friends)
+      setCurrentPlayer(currentPlayer)
+
     })
     gameRunner.onNextTurn((payload)=>{
       console.log("onNextTurn")
       setWordNotAccepted('')
       setGameData(payload)
+      const currentPlayer = whoseTurn(payload.turn, payload.friends)
+      setCurrentPlayer(currentPlayer)
     })
     gameRunner.onWordNotAccepted((payload)=>{
       console.log("onWordNotAccepted")
