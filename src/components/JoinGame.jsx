@@ -20,15 +20,15 @@ function JoinGame(props) {
     return (
         <div className="container">
             <Form>
-            <Form.Group>
+            <Form.Group className="formGroup">
                 <Form.Label>
                     What is your name? 
                 </Form.Label>
-                <Form.Control type="text" onChange={onChangeUsername} value={username} />
+                <Form.Control type="text" onChange={onChangeUsername} value={username} style={{ width: '30%' }}/>
                 <Form.Label>
                     Which room would you like to join? 
                 </Form.Label>
-                <Form.Control onChange={onChangeGameId} value={gameId} type="text"/>
+                <Form.Control onChange={onChangeGameId} value={gameId} type="text" style={{ width: '30%' }}/>
                 { props.joinFailed ? 
                     <div style={{color: "red"}}>
                       Failed to join game "{props.joinFailed.gameId}". The reason is: {props.joinFailed.message}
@@ -37,7 +37,7 @@ function JoinGame(props) {
                       Join a game by typing it's join code or name here that was shared with you. Leave blank to generate a new code.
                     </Form.Text>
                 }
-                <Button variant="primary" onClick={startGame}>
+                <Button className="button" variant="primary" onClick={startGame}>
                     Let's Go!
                 </Button>
             </Form.Group>
