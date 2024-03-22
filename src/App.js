@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Alert from 'react-bootstrap/Alert';
 import JoinGame from "./components/JoinGame"
@@ -22,10 +23,12 @@ function App() {
   const [maxPlayers, setMaxPlayers] = useState(3);
   const [isGameStarted, setIsGameStarted] = useState(false)
   const [gameData, setGameData] = useState({})
-  const [currentPlayer, setCurrentPlayer] = useState();
+  const [currentPlayer, setCurrentPlayer] = useState()
   const [joinFailed, setJoinFailed] = useState(false)
   const [wordNotAccepted, setWordNotAccepted] = useState(false)
   const [isConnected, setIsConnected] = useState(false)
+  const [buttonClicked, setButtonClicked] = useState(false);
+  const [usernameValid, setUsernameValid] = useState(false);
   useEffect(()=>{
     gameRunner.onConnect(()=>{
       setIsConnected(true)
@@ -68,12 +71,20 @@ function App() {
     })
   }, []);
   const startGame = ({username, gameId}) => {
-    gameId = gameId || randomGameId();
+    if (!username.trim()) { // if there is no username entered 
+      setUsernameValid(false)
+      setButtonClicked(true)
+      return
+    }
+    gameId = gameId || randomGameId()
+    setUsernameValid(true)
+    setButtonClicked(true)
     setUsername(username)
     setGameId(gameId)
     gameRunner.setGameId(gameId)
     gameRunner.setUsername(username)
     gameRunner.joinGame(gameId)
+    
   }
   const submitNextWord = (word) => {
     console.log("submiting next word")
@@ -87,8 +98,8 @@ function App() {
       :              <Alert variant="success">Connected to server {SERVER} </Alert>
       }
       <div>
-        <h1> Haiku Lightening </h1>
-        <h2> Hello {username} </h2>
+        <h1 className="title"> Haiku Lightening </h1>
+        { buttonClicked && (usernameValid ? <h2 className="title"> Hello {username} </h2> : <h2 className="title"> Must enter valid username </h2>) }
         <div className="join-game-container">
           { !hasJoinedGame ? <JoinGame {...{startGame, joinFailed} }/> : ''}
         </div>
